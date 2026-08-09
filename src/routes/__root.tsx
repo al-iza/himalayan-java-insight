@@ -132,8 +132,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="min-h-screen bg-background">
+        <AppSidebar />
+        <div className="lg:pl-64">
+          <TopHeader />
+          <main className="px-6 py-6 lg:px-8">
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+          </main>
+        </div>
+        <AskAi />
+      </div>
     </QueryClientProvider>
   );
 }
+
