@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Area,
-  AreaChart,
+  ComposedChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -68,7 +68,7 @@ export function SalesPerformance() {
 
       <div className="h-[320px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ left: 4, right: 8, top: 8 }}>
+          <ComposedChart data={data} margin={{ left: 4, right: 8, top: 8 }}>
             <defs>
               <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.45} />
@@ -98,6 +98,7 @@ export function SalesPerformance() {
               stroke="var(--chart-1)"
               strokeWidth={3}
               fill="url(#goldFill)"
+              isAnimationActive={false}
             />
             <Line
               type="monotone"
@@ -107,8 +108,9 @@ export function SalesPerformance() {
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
+              isAnimationActive={false}
             />
-          </AreaChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
     </Section>
@@ -149,6 +151,7 @@ export function ProductSales({ limit = 5 }: { limit?: number }) {
                 paddingAngle={3}
                 stroke="var(--card)"
                 strokeWidth={2}
+                isAnimationActive={false}
               >
                 {sorted.map((_, i) => (
                   <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
