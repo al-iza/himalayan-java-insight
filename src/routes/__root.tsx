@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AppSidebar } from "@/components/app-sidebar";
+import { TopHeader } from "@/components/top-header";
+import { AskAi } from "@/components/ask-ai";
+
 
 function NotFoundComponent() {
   return (
