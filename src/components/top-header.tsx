@@ -14,7 +14,7 @@ const titles: Record<string, { title: string; sub: string }> = {
 
 export function TopHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const page = titles[pathname] ?? titles["/"];
+  const page = titles[pathname] ?? titles["/"]!;
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     day: "numeric",

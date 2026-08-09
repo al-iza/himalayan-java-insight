@@ -2,6 +2,10 @@ import { useState } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { npr, kpis, products, outlets } from "@/lib/dummy-data";
 
+const top = outlets[0]!;
+const best = products[0]!;
+const fastest = products[3]!;
+
 const examples: { q: string; a: string }[] = [
   {
     q: "What was today's sales?",
@@ -9,11 +13,11 @@ const examples: { q: string; a: string }[] = [
   },
   {
     q: "Which outlet performed best?",
-    a: `${outlets[0].name} leads this month with ${npr(outlets[0].sales)} from ${outlets[0].orders.toLocaleString()} orders and +${outlets[0].growth}% growth.`,
+    a: `${top.name} leads this month with ${npr(top.sales)} from ${top.orders.toLocaleString()} orders and +${top.growth}% growth.`,
   },
   {
     q: "What is our best-selling product?",
-    a: `${products[0].name} — 892 cups sold generating ${npr(products[0].revenue)}. ${products[3].name} is the fastest growing at +${products[3].growth}%.`,
+    a: `${best.name} — ${best.qty} cups sold generating ${npr(best.revenue)}. ${fastest.name} is the fastest growing at +${fastest.growth}%.`,
   },
   {
     q: "Show me the lowest-selling products.",
