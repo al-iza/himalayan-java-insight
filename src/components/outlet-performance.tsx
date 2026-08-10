@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Search, Store, Trophy } from "lucide-react";
 import { npr, outlets, TOTAL_OUTLET_COUNT, type Outlet } from "@/lib/dummy-data";
-import { Growth, Section, Toggle } from "@/components/ui-bits";
-import { OutletComparisonChart } from "@/components/charts";
+import { Growth, OutletCountHover, Section, Toggle } from "@/components/ui-bits";
+import { OutletComparisonChart, ProductSales, SalesPerformance } from "@/components/charts";
 import { cn } from "@/lib/utils";
 
 const sorts = ["Sales", "Orders", "Growth"] as const;
@@ -61,9 +61,7 @@ export function OutletPerformance() {
               {name}
             </button>
           ))}
-          <span className="inline-flex items-center rounded-full border border-dashed border-border px-3.5 py-1.5 text-xs text-muted-foreground">
-            +{TOTAL_OUTLET_COUNT - 5} more outlets
-          </span>
+          <OutletCountHover />
         </div>
 
         <div className="grid gap-8 xl:grid-cols-[1.15fr_1fr]">
@@ -71,7 +69,7 @@ export function OutletPerformance() {
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Outlet Comparison — Sales (NPR)
             </p>
-            <OutletComparisonChart />
+            <OutletComparisonChart highlight={selected} />
           </div>
 
           <div>
@@ -103,7 +101,7 @@ export function OutletPerformance() {
                       o.name === best.name && "bg-gold-soft/30",
                     )}
                   >
-                    <td className="py-3 pr-3 text-muted-foreground">#{i + 1}</td>
+                    <td className="py-3 pr-3 text-muted-foreground">{i + 1}</td>
                     <td className="py-3 pr-3 font-medium">
                       {o.name}
                       {o.name === best.name && (
@@ -129,7 +127,13 @@ export function OutletPerformance() {
         </div>
       </Section>
 
-      {detail && <OutletDetail outlet={detail} />}
+      {detail && (
+        <>
+          <OutletDetail outlet={detail} />
+          <SalesPerformance outlet={detail.name} />
+          <ProductSales outlet={detail.name} limit={6} />
+        </>
+      )}
     </div>
   );
 }
@@ -185,7 +189,7 @@ function OutletDetail({ outlet }: { outlet: Outlet }) {
             {[outlet.topProduct, "Cappuccino", "Butter Croissant"].map((p, i) => (
               <li key={p} className="flex items-center justify-between">
                 <span>
-                  <span className="mr-2 text-muted-foreground">#{i + 1}</span>
+                  <span className="mr-2 text-muted-foreground">{i + 1}</span>
                   {p}
                 </span>
                 <span className="tabular-nums text-muted-foreground">
