@@ -119,6 +119,28 @@ export const outlets: Outlet[] = [
 
 export const TOTAL_OUTLET_COUNT = 92;
 
+/** Sample of the remaining outlets shown on hover. */
+export const MORE_OUTLET_NAMES = [
+  "Thamel",
+  "Jhamsikhel",
+  "Baluwatar",
+  "Lazimpat",
+  "New Road",
+  "Kupondole",
+  "Sanepa",
+  "Chabahil",
+  "Boudha",
+  "Maharajgunj",
+  "Bhaktapur Durbar",
+  "Patan Durbar",
+  "Pokhara Lakeside",
+  "Butwal Traffic Chowk",
+  "Biratnagar Main",
+  "Chitwan Bharatpur",
+  "Dharan Bhanu Chowk",
+  "Nepalgunj Birendra",
+];
+
 export const dailySales = [
   { label: "Mon 1", sales: 52_400, prev: 48_100 },
   { label: "Tue 2", sales: 58_900, prev: 51_300 },
