@@ -11,11 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as InventoryRouteImport } from './routes/inventory'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as OutletsRouteImport } from './routes/outlets'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as SalesRouteImport } from './routes/sales'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SigninRouteImport } from './routes/signin'
 
 const IndexRoute = IndexRouteImport.update({
@@ -28,9 +33,19 @@ const CustomersRoute = CustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InventoryRoute = InventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OutletsRoute = OutletsRouteImport.update({
@@ -43,6 +58,11 @@ const ProductsRoute = ProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -51,6 +71,16 @@ const ReportsRoute = ReportsRouteImport.update({
 const SalesRoute = SalesRouteImport.update({
   id: '/sales',
   path: '/sales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninRoute = SigninRouteImport.update({
@@ -62,32 +92,47 @@ const SigninRoute = SigninRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/customers': typeof CustomersRoute
+  '/help': typeof HelpRoute
   '/inventory': typeof InventoryRoute
+  '/notifications': typeof NotificationsRoute
   '/outlets': typeof OutletsRoute
   '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/sales': typeof SalesRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/customers': typeof CustomersRoute
+  '/help': typeof HelpRoute
   '/inventory': typeof InventoryRoute
+  '/notifications': typeof NotificationsRoute
   '/outlets': typeof OutletsRoute
   '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/sales': typeof SalesRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/customers': typeof CustomersRoute
+  '/help': typeof HelpRoute
   '/inventory': typeof InventoryRoute
+  '/notifications': typeof NotificationsRoute
   '/outlets': typeof OutletsRoute
   '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/sales': typeof SalesRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
 }
 export interface FileRouteTypes {
@@ -95,42 +140,62 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/customers'
+    | '/help'
     | '/inventory'
+    | '/notifications'
     | '/outlets'
     | '/products'
+    | '/profile'
     | '/reports'
     | '/sales'
+    | '/search'
+    | '/settings'
     | '/signin'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/customers'
+    | '/help'
     | '/inventory'
+    | '/notifications'
     | '/outlets'
     | '/products'
+    | '/profile'
     | '/reports'
     | '/sales'
+    | '/search'
+    | '/settings'
     | '/signin'
   id:
     | '__root__'
     | '/'
     | '/customers'
+    | '/help'
     | '/inventory'
+    | '/notifications'
     | '/outlets'
     | '/products'
+    | '/profile'
     | '/reports'
     | '/sales'
+    | '/search'
+    | '/settings'
     | '/signin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CustomersRoute: typeof CustomersRoute
+  HelpRoute: typeof HelpRoute
   InventoryRoute: typeof InventoryRoute
+  NotificationsRoute: typeof NotificationsRoute
   OutletsRoute: typeof OutletsRoute
   ProductsRoute: typeof ProductsRoute
+  ProfileRoute: typeof ProfileRoute
   ReportsRoute: typeof ReportsRoute
   SalesRoute: typeof SalesRoute
+  SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
   SigninRoute: typeof SigninRoute
 }
 
@@ -150,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inventory': {
       id: '/inventory'
       path: '/inventory'
       fullPath: '/inventory'
       preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/outlets': {
@@ -171,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reports': {
       id: '/reports'
       path: '/reports'
@@ -183,6 +269,20 @@ declare module '@tanstack/react-router' {
       path: '/sales'
       fullPath: '/sales'
       preLoaderRoute: typeof SalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signin': {
@@ -198,11 +298,16 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CustomersRoute: CustomersRoute,
+  HelpRoute: HelpRoute,
   InventoryRoute: InventoryRoute,
+  NotificationsRoute: NotificationsRoute,
   OutletsRoute: OutletsRoute,
   ProductsRoute: ProductsRoute,
+  ProfileRoute: ProfileRoute,
   ReportsRoute: ReportsRoute,
   SalesRoute: SalesRoute,
+  SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
   SigninRoute: SigninRoute,
 }
 export const routeTree = rootRouteImport

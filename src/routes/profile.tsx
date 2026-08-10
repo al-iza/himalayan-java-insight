@@ -55,10 +55,10 @@ function ProfilePage() {
           </span>
         </div>
         <div className="min-w-0">
-          <h2 className="font-display text-xl font-semibold">{values.fullName}</h2>
-          <p className="text-sm text-muted-foreground">{values.email}</p>
+          <h2 className="font-display text-xl font-semibold">{values["fullName"]}</h2>
+          <p className="text-sm text-muted-foreground">{values["email"]}</p>
           <p className="text-xs text-muted-foreground">
-            {values.role} · {values.contact}
+            {values["role"]} · {values["contact"]}
           </p>
         </div>
         <Link
