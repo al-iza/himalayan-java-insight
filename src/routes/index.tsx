@@ -9,11 +9,13 @@ import {
   CalendarRange,
 } from "lucide-react";
 import { useState } from "react";
-import { kpis, npr, outlets, TOTAL_OUTLET_COUNT } from "@/lib/dummy-data";
-import { KpiCard, Toggle } from "@/components/ui-bits";
+import { npr, outlets } from "@/lib/dummy-data";
+import { ALL_OUTLETS, RANGES, kpisFor, type Range } from "@/lib/analytics";
+import { KpiCard, OutletCountHover, Toggle } from "@/components/ui-bits";
 import { ProductSales, SalesPerformance } from "@/components/charts";
 import { OutletPerformance } from "@/components/outlet-performance";
 import { RealTimeSales } from "@/components/real-time-sales";
+import { useLiveData } from "@/lib/live-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,11 +36,16 @@ export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
-const ranges = ["Today", "This Week", "This Month", "Custom Range"] as const;
-
 function Dashboard() {
-  const [range, setRange] = useState<(typeof ranges)[number]>("This Month");
-  const [outlet, setOutlet] = useState("All Outlets");
+  const [range, setRange] = useState<Range>("This Month");
+  const [outlet, setOutlet] = useState(ALL_OUTLETS);
+  const live = useLiveData();
+  const k = kpisFor(range, outlet);
+
+  const isToday = range === "Today";
+  const sales = isToday && outlet === ALL_OUTLETS ? live.sales : k.sales;
+  const orders = isToday && outlet === ALL_OUTLETS ? live.orders : k.orders;
+  const aov = isToday && outlet === ALL_OUTLETS ? live.avg : k.aov;
 
   return (
     <div className="space-y-6">
@@ -46,7 +53,7 @@ function Dashboard() {
         <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           <CalendarRange className="h-4 w-4" /> Period
         </span>
-        <Toggle options={ranges} value={range} onChange={setRange} />
+        <Toggle options={RANGES} value={range} onChange={setRange} />
         <div className="ml-auto flex items-center gap-2">
           <span className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             Outlet
@@ -56,61 +63,67 @@ function Dashboard() {
             onChange={(e) => setOutlet(e.target.value)}
             className="h-9 rounded-full border border-border bg-muted/60 px-4 text-sm outline-none focus:border-gold"
           >
-            <option>All Outlets</option>
+            <option>{ALL_OUTLETS}</option>
             {outlets.map((o) => (
               <option key={o.name}>{o.name}</option>
             ))}
           </select>
-          <span className="text-[11px] text-muted-foreground">
-            {TOTAL_OUTLET_COUNT}+ outlets connected
-          </span>
+          <OutletCountHover />
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <KpiCard
           label="Total Sales"
-          value={npr(kpis.totalSales)}
+          value={npr(sales)}
           icon={Banknote}
-          meta={`vs ${npr(kpis.prevSales)} last period`}
+          meta={
+            isToday && outlet === ALL_OUTLETS
+              ? `Live · updated ${live.updatedAt}`
+              : `vs ${npr(k.prevSales)} last period`
+          }
           highlight
         />
         <KpiCard
           label="Total Orders"
-          value={kpis.totalOrders.toLocaleString()}
+          value={orders.toLocaleString()}
           icon={Receipt}
-          meta={`vs ${kpis.prevOrders.toLocaleString()} last period`}
+          meta={
+            isToday && outlet === ALL_OUTLETS
+              ? "Live order count"
+              : `vs ${k.prevOrders.toLocaleString()} last period`
+          }
         />
         <KpiCard
           label="Average Order Value"
-          value={npr(kpis.avgOrderValue)}
+          value={npr(Number(aov.toFixed(1)))}
           icon={Wallet}
-          meta="+2.1% vs last period"
+          meta={`${range} · ${outlet}`}
         />
         <KpiCard
           label="Best Performing Outlet"
-          value={kpis.bestOutlet}
+          value={k.bestOutlet.name}
           icon={Store}
-          meta={`${npr(486300)} this month`}
+          meta={`${npr(k.bestOutlet.sales)} this month`}
         />
         <KpiCard
           label="Top Selling Product"
-          value={kpis.topProduct}
+          value={k.topProduct.name}
           icon={Coffee}
-          meta="892 cups sold"
+          meta={`${k.topProduct.qty} sold · ${range}`}
         />
         <KpiCard
           label="Sales Growth"
-          value={`+${kpis.salesGrowth}%`}
+          value={`${k.growth >= 0 ? "+" : ""}${k.growth}%`}
           icon={TrendingUp}
           meta="Compared to previous period"
           highlight
         />
       </div>
 
-      <SalesPerformance />
-      <ProductSales />
-      <RealTimeSales />
+      <SalesPerformance range={range} outlet={outlet} onRangeChange={setRange} />
+      <ProductSales range={range} outlet={outlet} />
+      <RealTimeSales outlet={outlet} />
       <OutletPerformance />
     </div>
   );

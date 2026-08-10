@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MORE_OUTLET_NAMES, TOTAL_OUTLET_COUNT } from "@/lib/dummy-data";
 
 export function Section({
   title,
@@ -118,5 +119,33 @@ export function ComingSoon({ title, message }: { title: string; message: string 
       <h2 className="mt-5 font-display text-2xl font-semibold">{title}</h2>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{message}</p>
     </div>
+  );
+}
+
+export function OutletCountHover({ className }: { className?: string }) {
+  return (
+    <span className={cn("group relative inline-flex", className)}>
+      <span className="cursor-default rounded-full border border-dashed border-border px-3 py-1 text-[11px] text-muted-foreground transition group-hover:border-gold group-hover:bg-gold-soft/40 group-hover:text-espresso">
+        {TOTAL_OUTLET_COUNT}+ outlets connected
+      </span>
+      <span className="pointer-events-none absolute right-0 top-full z-40 mt-2 hidden w-72 rounded-xl border border-border bg-card p-3 text-left shadow-[var(--shadow-card)] group-hover:block">
+        <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Also reporting
+        </span>
+        <span className="mt-2 flex flex-wrap gap-1.5">
+          {MORE_OUTLET_NAMES.slice(0, 12).map((n) => (
+            <span
+              key={n}
+              className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-foreground"
+            >
+              {n}
+            </span>
+          ))}
+        </span>
+        <span className="mt-2 block text-[11px] text-muted-foreground">
+          + {TOTAL_OUTLET_COUNT - 5 - 12} more outlets across Nepal
+        </span>
+      </span>
+    </span>
   );
 }

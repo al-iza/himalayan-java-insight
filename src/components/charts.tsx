@@ -15,19 +15,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { CHART_COLORS, npr, nprShort, outlets, type Product } from "@/lib/dummy-data";
 import {
-  CHART_COLORS,
-  npr,
-  nprShort,
-  products as allProducts,
-  salesSeries,
-  outlets,
-  type Product,
-} from "@/lib/dummy-data";
+  ALL_OUTLETS,
+  RANGES,
+  kpisFor,
+  productsFor,
+  seriesFor,
+  seriesLabel,
+  type Range,
+} from "@/lib/analytics";
 import { Growth, Section, Toggle } from "@/components/ui-bits";
-
-const periods = ["Daily", "Weekly", "Monthly"] as const;
-type Period = (typeof periods)[number];
 
 const tooltipStyle = {
   borderRadius: 12,
@@ -37,33 +35,44 @@ const tooltipStyle = {
   boxShadow: "var(--shadow-card)",
 };
 
-export function SalesPerformance() {
-  const [period, setPeriod] = useState<Period>("Daily");
-  const data = salesSeries[period];
-  const total = data.reduce((s, d) => s + d.sales, 0);
-  const prevTotal = data.reduce((s, d) => s + d.prev, 0);
-  const delta = ((total - prevTotal) / prevTotal) * 100;
+export function SalesPerformance({
+  range: rangeProp,
+  outlet = ALL_OUTLETS,
+  onRangeChange,
+}: {
+  range?: Range;
+  outlet?: string;
+  onRangeChange?: (r: Range) => void;
+}) {
+  const [local, setLocal] = useState<Range>("This Week");
+  const range = rangeProp ?? local;
+  const setRange = onRangeChange ?? setLocal;
+
+  const data = seriesFor(range, outlet);
+  const { sales, prevSales, growth } = kpisFor(range, outlet);
 
   return (
     <Section
       title="Sales Performance"
-      subtitle="Sales (NPR) over time"
-      action={<Toggle options={periods} value={period} onChange={setPeriod} />}
+      subtitle={`${seriesLabel(range)} · ${outlet}`}
+      action={<Toggle options={RANGES} value={range} onChange={setRange} />}
     >
       <div className="mb-5 flex flex-wrap items-end gap-6">
         <div>
           <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
             This Period
           </p>
-          <p className="font-display text-2xl font-semibold">{npr(total)}</p>
+          <p className="font-display text-2xl font-semibold">{npr(sales)}</p>
         </div>
         <div>
           <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
             Previous Period
           </p>
-          <p className="font-display text-xl font-medium text-muted-foreground">{npr(prevTotal)}</p>
+          <p className="font-display text-xl font-medium text-muted-foreground">
+            {npr(prevSales)}
+          </p>
         </div>
-        <Growth value={Number(delta.toFixed(1))} className="mb-1.5" />
+        <Growth value={growth} className="mb-1.5" />
       </div>
 
       <div className="h-[320px] w-full">
@@ -128,14 +137,22 @@ function sortProducts(list: Product[], sort: Sort) {
   return c.sort((a, b) => b.growth - a.growth);
 }
 
-export function ProductSales({ limit = 5 }: { limit?: number }) {
+export function ProductSales({
+  limit = 5,
+  range = "This Month",
+  outlet = ALL_OUTLETS,
+}: {
+  limit?: number;
+  range?: Range;
+  outlet?: string;
+}) {
   const [sort, setSort] = useState<Sort>("Most Sold");
-  const sorted = sortProducts(allProducts, sort).slice(0, limit);
+  const sorted = sortProducts(productsFor(range, outlet), sort).slice(0, limit);
 
   return (
     <Section
       title="Product Sales"
-      subtitle="Distribution and ranking of menu items"
+      subtitle={`Distribution and ranking · ${range} · ${outlet}`}
       action={<Toggle options={sorts} value={sort} onChange={setSort} />}
     >
       <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
@@ -176,11 +193,16 @@ export function ProductSales({ limit = 5 }: { limit?: number }) {
             </thead>
             <tbody>
               {sorted.map((p, i) => (
-                <tr key={p.name} className="border-b border-border/70 last:border-0">
-                  <td className="py-3 pr-4 text-muted-foreground">#{i + 1}</td>
+                <tr
+                  key={p.name}
+                  className="border-b border-border/70 transition last:border-0 hover:bg-muted/50"
+                >
+                  <td className="py-3 pr-4 text-muted-foreground">{i + 1}</td>
                   <td className="py-3 pr-4 font-medium">
-                    <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle"
-                      style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
+                    <span
+                      className="mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle"
+                      style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
+                    />
                     {p.name}
                   </td>
                   <td className="py-3 pr-4 text-right tabular-nums">{p.qty}</td>
@@ -198,7 +220,53 @@ export function ProductSales({ limit = 5 }: { limit?: number }) {
   );
 }
 
-export function OutletComparisonChart() {
+export function ProductRevenueBars({
+  range = "This Month",
+  outlet = ALL_OUTLETS,
+}: {
+  range?: Range;
+  outlet?: string;
+}) {
+  const data = productsFor(range, outlet)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 6);
+
+  return (
+    <div className="h-[280px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} margin={{ left: 4, right: 8, top: 8 }}>
+          <CartesianGrid strokeDasharray="4 4" stroke="var(--border)" vertical={false} />
+          <XAxis
+            dataKey="name"
+            tickLine={false}
+            axisLine={false}
+            interval={0}
+            tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+          />
+          <YAxis
+            tickFormatter={(v) => nprShort(Number(v)).replace("NPR ", "")}
+            tickLine={false}
+            axisLine={false}
+            width={48}
+            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+          />
+          <Tooltip
+            cursor={{ fill: "var(--muted)" }}
+            contentStyle={tooltipStyle}
+            formatter={(v) => npr(Number(v))}
+          />
+          <Bar dataKey="revenue" name="Revenue" radius={[8, 8, 0, 0]} maxBarSize={48}>
+            {data.map((_, i) => (
+              <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function OutletComparisonChart({ highlight }: { highlight?: string }) {
   const data = [...outlets].sort((a, b) => b.sales - a.sales);
   return (
     <div className="h-[300px] w-full">
@@ -218,10 +286,25 @@ export function OutletComparisonChart() {
             width={48}
             tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
           />
-          <Tooltip cursor={{ fill: "var(--muted)" }} contentStyle={tooltipStyle} formatter={(v) => npr(Number(v))} />
+          <Tooltip
+            cursor={{ fill: "var(--muted)" }}
+            contentStyle={tooltipStyle}
+            formatter={(v) => npr(Number(v))}
+          />
           <Bar dataKey="sales" name="Sales" radius={[8, 8, 0, 0]} maxBarSize={64}>
-            {data.map((_, i) => (
-              <Cell key={i} fill={i === 0 ? "var(--chart-1)" : "var(--chart-3)"} />
+            {data.map((d, i) => (
+              <Cell
+                key={i}
+                fill={
+                  highlight && highlight !== ALL_OUTLETS
+                    ? d.name === highlight
+                      ? "var(--chart-1)"
+                      : "var(--chart-3)"
+                    : i === 0
+                      ? "var(--chart-1)"
+                      : "var(--chart-3)"
+                }
+              />
             ))}
           </Bar>
         </BarChart>
