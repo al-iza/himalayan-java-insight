@@ -14,7 +14,6 @@ import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as OutletsRouteImport } from './routes/outlets'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReportsRouteImport } from './routes/reports'
@@ -22,6 +21,8 @@ import { Route as SalesRouteImport } from './routes/sales'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SigninRouteImport } from './routes/signin'
+import { Route as OutletsIndexRouteImport } from './routes/outlets.index'
+import { Route as OutletsOutletRouteImport } from './routes/outlets.$outlet'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,11 +47,6 @@ const InventoryRoute = InventoryRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OutletsRoute = OutletsRouteImport.update({
-  id: '/outlets',
-  path: '/outlets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsRoute = ProductsRouteImport.update({
@@ -88,6 +84,16 @@ const SigninRoute = SigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OutletsIndexRoute = OutletsIndexRouteImport.update({
+  id: '/outlets/',
+  path: '/outlets/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutletsOutletRoute = OutletsOutletRouteImport.update({
+  id: '/outlets/$outlet',
+  path: '/outlets/$outlet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -95,7 +101,6 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/inventory': typeof InventoryRoute
   '/notifications': typeof NotificationsRoute
-  '/outlets': typeof OutletsRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
@@ -103,6 +108,8 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
+  '/outlets/$outlet': typeof OutletsOutletRoute
+  '/outlets/': typeof OutletsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,7 +117,6 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/inventory': typeof InventoryRoute
   '/notifications': typeof NotificationsRoute
-  '/outlets': typeof OutletsRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
@@ -118,6 +124,8 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
+  '/outlets/$outlet': typeof OutletsOutletRoute
+  '/outlets': typeof OutletsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -126,7 +134,6 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/inventory': typeof InventoryRoute
   '/notifications': typeof NotificationsRoute
-  '/outlets': typeof OutletsRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
@@ -134,6 +141,8 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
+  '/outlets/$outlet': typeof OutletsOutletRoute
+  '/outlets/': typeof OutletsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -143,7 +152,6 @@ export interface FileRouteTypes {
     | '/help'
     | '/inventory'
     | '/notifications'
-    | '/outlets'
     | '/products'
     | '/profile'
     | '/reports'
@@ -151,6 +159,8 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/signin'
+    | '/outlets/$outlet'
+    | '/outlets/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -158,7 +168,6 @@ export interface FileRouteTypes {
     | '/help'
     | '/inventory'
     | '/notifications'
-    | '/outlets'
     | '/products'
     | '/profile'
     | '/reports'
@@ -166,6 +175,8 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/signin'
+    | '/outlets/$outlet'
+    | '/outlets'
   id:
     | '__root__'
     | '/'
@@ -173,7 +184,6 @@ export interface FileRouteTypes {
     | '/help'
     | '/inventory'
     | '/notifications'
-    | '/outlets'
     | '/products'
     | '/profile'
     | '/reports'
@@ -181,6 +191,8 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/signin'
+    | '/outlets/$outlet'
+    | '/outlets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -189,7 +201,6 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   InventoryRoute: typeof InventoryRoute
   NotificationsRoute: typeof NotificationsRoute
-  OutletsRoute: typeof OutletsRoute
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   ReportsRoute: typeof ReportsRoute
@@ -197,6 +208,8 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   SigninRoute: typeof SigninRoute
+  OutletsOutletRoute: typeof OutletsOutletRoute
+  OutletsIndexRoute: typeof OutletsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -234,13 +247,6 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/outlets': {
-      id: '/outlets'
-      path: '/outlets'
-      fullPath: '/outlets'
-      preLoaderRoute: typeof OutletsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products': {
@@ -292,6 +298,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/outlets/': {
+      id: '/outlets/'
+      path: '/outlets'
+      fullPath: '/outlets/'
+      preLoaderRoute: typeof OutletsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outlets/$outlet': {
+      id: '/outlets/$outlet'
+      path: '/outlets/$outlet'
+      fullPath: '/outlets/$outlet'
+      preLoaderRoute: typeof OutletsOutletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -301,7 +321,6 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   InventoryRoute: InventoryRoute,
   NotificationsRoute: NotificationsRoute,
-  OutletsRoute: OutletsRoute,
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   ReportsRoute: ReportsRoute,
@@ -309,6 +328,8 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   SigninRoute: SigninRoute,
+  OutletsOutletRoute: OutletsOutletRoute,
+  OutletsIndexRoute: OutletsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
