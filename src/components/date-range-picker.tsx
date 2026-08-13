@@ -43,8 +43,8 @@ export function DateRangePicker({
         <Calendar
           mode="range"
           numberOfMonths={2}
-          defaultMonth={value?.from}
-          selected={value}
+          {...(value?.from ? { defaultMonth: value.from } : {})}
+          {...(value ? { selected: value } : {})}
           onSelect={(r) => {
             onChange(r);
             if (r?.from && r?.to) setOpen(false);
