@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { OutletPerformance } from "@/components/outlet-performance";
 
-export const Route = createFileRoute("/outlets")({
+export const Route = createFileRoute("/outlets/")({
   head: () => ({
     meta: [
       { title: "Outlet Performance | Himalayan Java" },
