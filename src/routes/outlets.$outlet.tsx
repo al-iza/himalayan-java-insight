@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { ComingSoon, Growth, Section } from "@/components/ui-bits";
 import { ProductSales, SalesPerformance } from "@/components/charts";
 import { npr, outlets } from "@/lib/dummy-data";
@@ -61,12 +61,7 @@ function OutletDetailPage() {
         <>
           <Section
             title={place.name}
-            subtitle={
-              <>
-                <MapPin className="mr-1 inline h-3.5 w-3.5 text-gold" />
-                {place.city}, Nepal · Peak {data.peak}
-              </>
-            }
+            subtitle={`${place.city}, Nepal · Peak ${data.peak}`}
             action={<Growth value={data.growth} />}
           >
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

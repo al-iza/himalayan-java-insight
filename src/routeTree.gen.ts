@@ -22,6 +22,7 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as OutletsIndexRouteImport } from './routes/outlets.index'
+import { Route as OutletsOutletRouteImport } from './routes/outlets.$outlet'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,11 @@ const OutletsIndexRoute = OutletsIndexRouteImport.update({
   path: '/outlets/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OutletsOutletRoute = OutletsOutletRouteImport.update({
+  id: '/outlets/$outlet',
+  path: '/outlets/$outlet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
+  '/outlets/$outlet': typeof OutletsOutletRoute
   '/outlets/': typeof OutletsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
+  '/outlets/$outlet': typeof OutletsOutletRoute
   '/outlets': typeof OutletsIndexRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
+  '/outlets/$outlet': typeof OutletsOutletRoute
   '/outlets/': typeof OutletsIndexRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/signin'
+    | '/outlets/$outlet'
     | '/outlets/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/signin'
+    | '/outlets/$outlet'
     | '/outlets'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/settings'
     | '/signin'
+    | '/outlets/$outlet'
     | '/outlets/'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
   SigninRoute: typeof SigninRoute
+  OutletsOutletRoute: typeof OutletsOutletRoute
   OutletsIndexRoute: typeof OutletsIndexRoute
 }
 
@@ -292,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OutletsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/outlets/$outlet': {
+      id: '/outlets/$outlet'
+      path: '/outlets/$outlet'
+      fullPath: '/outlets/$outlet'
+      preLoaderRoute: typeof OutletsOutletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
   SigninRoute: SigninRoute,
+  OutletsOutletRoute: OutletsOutletRoute,
   OutletsIndexRoute: OutletsIndexRoute,
 }
 export const routeTree = rootRouteImport
