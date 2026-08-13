@@ -45,7 +45,52 @@ function outletSeed(outlet: string) {
   return h;
 }
 
-export function seriesFor(range: Range, outlet: string) {
+export type Custom = { from?: Date | undefined; to?: Date | undefined } | undefined;
+
+const DAY = 86_400_000;
+
+export function customDays(custom: Custom) {
+  if (!custom?.from) return 0;
+  const to = custom.to ?? custom.from;
+  return Math.max(1, Math.round((to.getTime() - custom.from.getTime()) / DAY) + 1);
+}
+
+export function customLabel(custom: Custom) {
+  if (!custom?.from) return "Custom Range";
+  const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  const to = custom.to ?? custom.from;
+  return `${fmt(custom.from)} – ${fmt(to)}`;
+}
+
+/** Deterministic daily/weekly buckets between two dates. */
+function customSeries(custom: Custom, outlet: string) {
+  const from = custom!.from!;
+  const days = customDays(custom);
+  const step = days <= 16 ? 1 : days <= 90 ? 7 : 30;
+  const buckets = Math.max(1, Math.ceil(days / step));
+  const share = outletShare(outlet);
+  const out: { label: string; sales: number; prev: number }[] = [];
+  for (let i = 0; i < buckets; i++) {
+    const start = new Date(from.getTime() + i * step * DAY);
+    const key = start.getFullYear() * 372 + start.getMonth() * 31 + start.getDate();
+    const wobble = 0.82 + ((key * 37) % 45) / 100;
+    const base = 58_000 * step * share * wobble;
+    out.push({
+      label:
+        step === 1
+          ? start.toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+          : step === 7
+            ? `Wk ${i + 1}`
+            : start.toLocaleDateString("en-GB", { month: "short" }),
+      sales: Math.round(base),
+      prev: Math.round(base * (0.88 + ((key * 13) % 16) / 100)),
+    });
+  }
+  return out;
+}
+
+export function seriesFor(range: Range, outlet: string, custom?: Custom) {
+  if (range === "Custom Range" && custom?.from) return customSeries(custom, outlet);
   const base =
     range === "Today"
       ? hourlySales
@@ -66,15 +111,16 @@ export function seriesFor(range: Range, outlet: string) {
   });
 }
 
-export function seriesLabel(range: Range) {
+export function seriesLabel(range: Range, custom?: Custom) {
+  if (range === "Custom Range" && custom?.from) return `Sales · ${customLabel(custom)}`;
   if (range === "Today") return "Hourly sales today";
   if (range === "This Week") return "Daily sales this week";
   if (range === "This Month") return "Weekly sales this month";
   return "Monthly sales · last 3 months";
 }
 
-export function kpisFor(range: Range, outlet: string) {
-  const data = seriesFor(range, outlet);
+export function kpisFor(range: Range, outlet: string, custom?: Custom) {
+  const data = seriesFor(range, outlet, custom);
   const sales = data.reduce((s, d) => s + d.sales, 0);
   const prevSales = data.reduce((s, d) => s + d.prev, 0);
   const aov =
@@ -85,7 +131,7 @@ export function kpisFor(range: Range, outlet: string) {
   const prevOrders = Math.max(1, Math.round(prevSales / aov));
   const growth = Number((((sales - prevSales) / prevSales) * 100).toFixed(1));
 
-  const list = productsFor(range, outlet);
+  const list = productsFor(range, outlet, custom);
   const topProduct = [...list].sort((a, b) => b.qty - a.qty)[0]!;
 
   const scopedOutlets = outlet === ALL_OUTLETS ? outlets : outlets.filter((o) => o.name === outlet);
@@ -101,9 +147,10 @@ const rangeFactor: Record<Range, number> = {
   "Custom Range": 2.8,
 };
 
-export function productsFor(range: Range, outlet: string): Product[] {
+export function productsFor(range: Range, outlet: string, custom?: Custom): Product[] {
   const share = outletShare(outlet);
-  const f = rangeFactor[range] * share;
+  const days = range === "Custom Range" ? customDays(custom) : 0;
+  const f = (days > 0 ? days / 30 : rangeFactor[range]) * share;
   const seed = outletSeed(outlet);
   return products.map((p, i) => {
     const wobble = seed === 0 ? 1 : 0.85 + (((seed + i * 7) % 30) / 100);
