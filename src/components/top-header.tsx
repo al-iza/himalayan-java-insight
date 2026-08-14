@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Bell, LogOut, Mail, Phone, Search, Settings, User } from "lucide-react";
 import { npr } from "@/lib/dummy-data";
@@ -27,12 +27,17 @@ export function TopHeader() {
   const live = useLiveData();
   const [menu, setMenu] = useState(false);
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(
+      new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+    );
+  }, []);
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur">
@@ -53,8 +58,8 @@ export function TopHeader() {
         </div>
 
         <div className="hidden text-right leading-tight xl:block">
-          <p className="text-xs font-medium">{today}</p>
-          <p className="text-[11px] text-muted-foreground">Updated {live.updatedAt}</p>
+          <p className="text-xs font-medium">{today || "\u00a0"}</p>
+          <p className="text-[11px] text-muted-foreground">{today ? `Updated ${live.updatedAt}` : "\u00a0"}</p>
         </div>
 
         <Link

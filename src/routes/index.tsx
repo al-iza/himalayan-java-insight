@@ -15,6 +15,7 @@ import { ALL_OUTLETS, RANGES, kpisFor, type Range } from "@/lib/analytics";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { KpiCard, OutletCountHover, Toggle } from "@/components/ui-bits";
 import { ProductSales, SalesPerformance } from "@/components/charts";
+import { OutletMap } from "@/components/outlet-map";
 import { OutletPerformance } from "@/components/outlet-performance";
 import { RealTimeSales } from "@/components/real-time-sales";
 import { useLiveData } from "@/lib/live-data";
@@ -134,6 +135,7 @@ function Dashboard() {
       <SalesPerformance range={range} outlet={outlet} onRangeChange={setRange} custom={custom} />
       <ProductSales range={range} outlet={outlet} custom={custom} />
       <RealTimeSales outlet={outlet} />
+      <OutletMap />
       <OutletPerformance />
     </div>
   );

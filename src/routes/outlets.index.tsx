@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OutletMap } from "@/components/outlet-map";
 import { OutletPerformance } from "@/components/outlet-performance";
 
 export const Route = createFileRoute("/outlets/")({
@@ -17,5 +18,10 @@ export const Route = createFileRoute("/outlets/")({
       },
     ],
   }),
-  component: () => <OutletPerformance />,
+  component: () => (
+    <div className="space-y-6">
+      <OutletMap />
+      <OutletPerformance />
+    </div>
+  ),
 });
