@@ -1,7 +1,9 @@
+import type { DateRange } from "react-day-picker";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SalesPerformance } from "@/components/charts";
 import { RealTimeSales } from "@/components/real-time-sales";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { KpiCard, OutletCountHover, Toggle } from "@/components/ui-bits";
 import { Banknote, CalendarRange, Receipt, TrendingUp, Wallet } from "lucide-react";
 import { npr, outlets } from "@/lib/dummy-data";
@@ -30,8 +32,9 @@ export const Route = createFileRoute("/sales")({
 function SalesPage() {
   const [range, setRange] = useState<Range>("Today");
   const [outlet, setOutlet] = useState(ALL_OUTLETS);
+  const [custom, setCustom] = useState<DateRange | undefined>(undefined);
   const live = useLiveData();
-  const k = kpisFor(range, outlet);
+  const k = kpisFor(range, outlet, custom);
 
   const isLive = range === "Today" && outlet === ALL_OUTLETS;
   const sales = isLive ? live.sales : k.sales;
@@ -45,6 +48,13 @@ function SalesPage() {
           <CalendarRange className="h-4 w-4" /> Period
         </span>
         <Toggle options={RANGES} value={range} onChange={setRange} />
+        <DateRangePicker
+          value={custom}
+          onChange={(r) => {
+            setCustom(r);
+            setRange(r?.from ? "Custom Range" : "This Month");
+          }}
+        />
         <div className="ml-auto flex items-center gap-2">
           <select
             value={outlet}
@@ -81,7 +91,7 @@ function SalesPage() {
         />
       </div>
 
-      <SalesPerformance range={range} outlet={outlet} onRangeChange={setRange} />
+      <SalesPerformance range={range} outlet={outlet} onRangeChange={setRange} custom={custom} />
       <RealTimeSales outlet={outlet} />
     </div>
   );

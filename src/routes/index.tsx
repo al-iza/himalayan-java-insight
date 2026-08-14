@@ -1,3 +1,4 @@
+import type { DateRange } from "react-day-picker";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Banknote,
@@ -11,8 +12,10 @@ import {
 import { useState } from "react";
 import { npr, outlets } from "@/lib/dummy-data";
 import { ALL_OUTLETS, RANGES, kpisFor, type Range } from "@/lib/analytics";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { KpiCard, OutletCountHover, Toggle } from "@/components/ui-bits";
 import { ProductSales, SalesPerformance } from "@/components/charts";
+import { OutletMap } from "@/components/outlet-map";
 import { OutletPerformance } from "@/components/outlet-performance";
 import { RealTimeSales } from "@/components/real-time-sales";
 import { useLiveData } from "@/lib/live-data";
@@ -39,8 +42,9 @@ export const Route = createFileRoute("/")({
 function Dashboard() {
   const [range, setRange] = useState<Range>("This Month");
   const [outlet, setOutlet] = useState(ALL_OUTLETS);
+  const [custom, setCustom] = useState<DateRange | undefined>(undefined);
   const live = useLiveData();
-  const k = kpisFor(range, outlet);
+  const k = kpisFor(range, outlet, custom);
 
   const isToday = range === "Today";
   const sales = isToday && outlet === ALL_OUTLETS ? live.sales : k.sales;
@@ -54,6 +58,13 @@ function Dashboard() {
           <CalendarRange className="h-4 w-4" /> Period
         </span>
         <Toggle options={RANGES} value={range} onChange={setRange} />
+        <DateRangePicker
+          value={custom}
+          onChange={(r) => {
+            setCustom(r);
+            setRange(r?.from ? "Custom Range" : "This Month");
+          }}
+        />
         <div className="ml-auto flex items-center gap-2">
           <span className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             Outlet
@@ -121,9 +132,10 @@ function Dashboard() {
         />
       </div>
 
-      <SalesPerformance range={range} outlet={outlet} onRangeChange={setRange} />
-      <ProductSales range={range} outlet={outlet} />
+      <SalesPerformance range={range} outlet={outlet} onRangeChange={setRange} custom={custom} />
+      <ProductSales range={range} outlet={outlet} custom={custom} />
       <RealTimeSales outlet={outlet} />
+      <OutletMap />
       <OutletPerformance />
     </div>
   );

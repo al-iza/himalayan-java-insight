@@ -1,7 +1,9 @@
+import type { DateRange } from "react-day-picker";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { CalendarRange } from "lucide-react";
 import { ProductSales, ProductRevenueBars } from "@/components/charts";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { Growth, OutletCountHover, Section, Toggle } from "@/components/ui-bits";
 import { npr, outlets, type Product } from "@/lib/dummy-data";
 import { ALL_OUTLETS, RANGES, productsFor, type Range } from "@/lib/analytics";
@@ -55,7 +57,8 @@ function MiniList({
 function ProductsPage() {
   const [range, setRange] = useState<Range>("This Month");
   const [outlet, setOutlet] = useState(ALL_OUTLETS);
-  const scoped = productsFor(range, outlet);
+  const [custom, setCustom] = useState<DateRange | undefined>(undefined);
+  const scoped = productsFor(range, outlet, custom);
   const list = (sorter: (a: Product, b: Product) => number) =>
     [...scoped].sort(sorter).slice(0, 4);
 
@@ -66,6 +69,13 @@ function ProductsPage() {
           <CalendarRange className="h-4 w-4" /> Period
         </span>
         <Toggle options={RANGES} value={range} onChange={setRange} />
+        <DateRangePicker
+          value={custom}
+          onChange={(r) => {
+            setCustom(r);
+            setRange(r?.from ? "Custom Range" : "This Month");
+          }}
+        />
         <div className="ml-auto flex items-center gap-2">
           <select
             value={outlet}
@@ -110,7 +120,7 @@ function ProductsPage() {
         title="Revenue by Product"
         subtitle={`Top 6 products by revenue · ${range} · ${outlet}`}
       >
-        <ProductRevenueBars range={range} outlet={outlet} />
+        <ProductRevenueBars range={range} outlet={outlet} custom={custom} />
       </Section>
 
       <Section title="Full Product List" subtitle={`${range} · ${outlet}`}>
