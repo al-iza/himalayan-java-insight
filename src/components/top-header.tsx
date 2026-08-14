@@ -17,7 +17,7 @@ const titles: Record<string, { title: string; sub: string }> = {
   "/settings": { title: "Settings", sub: "Coming soon." },
   "/help": { title: "Help & Support", sub: "Coming soon." },
   "/notifications": { title: "Notifications", sub: "Coming soon." },
-  "/search": { title: "Search", sub: "Coming soon." },
+  "/search": { title: "Search Outlets", sub: "Find any Himalayan Java outlet across Nepal." },
   "/signin": { title: "Sign In", sub: "Access the analytics dashboard." },
 };
 
