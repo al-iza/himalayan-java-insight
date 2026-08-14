@@ -22,13 +22,15 @@ const clock = () =>
 
 let counter = 88_215;
 
-let state: LiveState = {
+const initialState: LiveState = {
   sales: todayLive.sales,
   orders: todayLive.orders,
   avg: todayLive.avg,
   transactions: liveTransactions,
-  updatedAt: clock(),
+  updatedAt: "--:--",
 };
+
+let state: LiveState = initialState;
 
 const listeners = new Set<() => void>();
 let timer: ReturnType<typeof setInterval> | null = null;
@@ -75,7 +77,8 @@ function subscribe(listener: () => void) {
 }
 
 const getSnapshot = () => state;
+const getServerSnapshot = () => initialState;
 
 export function useLiveData() {
-  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
