@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { CalendarRange } from "lucide-react";
 import { ProductSales, ProductRevenueBars } from "@/components/charts";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { Growth, OutletCountHover, Section, Toggle } from "@/components/ui-bits";
 import { npr, outlets, type Product } from "@/lib/dummy-data";
 import { ALL_OUTLETS, RANGES, productsFor, type Range } from "@/lib/analytics";
