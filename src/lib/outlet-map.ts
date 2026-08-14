@@ -16,11 +16,11 @@ export const slugify = (name: string) =>
 
 /** The 5 outlets with live analytics (Kathmandu valley, slightly spread for legibility). */
 const activeLocations: MapOutlet[] = [
-  { name: "Tridevi Marg", city: "Kathmandu", lat: 27.715, lon: 85.313, active: true },
-  { name: "Panipokhari", city: "Kathmandu", lat: 27.735, lon: 85.325, active: true },
-  { name: "International Club", city: "Kathmandu", lat: 27.7, lon: 85.345, active: true },
-  { name: "Durbar Mall", city: "Kathmandu", lat: 27.69, lon: 85.29, active: true },
-  { name: "Bikers Cafe Naxal", city: "Kathmandu", lat: 27.72, lon: 85.36, active: true },
+  { name: "Tridevi Marg", city: "Kathmandu", lat: 27.98, lon: 85.05, active: true },
+  { name: "Panipokhari", city: "Kathmandu", lat: 28.05, lon: 85.62, active: true },
+  { name: "International Club", city: "Kathmandu", lat: 27.62, lon: 85.05, active: true },
+  { name: "Durbar Mall", city: "Kathmandu", lat: 27.38, lon: 85.55, active: true },
+  { name: "Bikers Cafe Naxal", city: "Kathmandu", lat: 27.80, lon: 85.95, active: true },
 ];
 
 /** Outlets mapped across Nepal whose analytics are not connected yet. */
