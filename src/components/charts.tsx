@@ -23,7 +23,7 @@ import {
   productsFor,
   seriesFor,
   seriesLabel,
-  type Range,
+  type Range, type Custom,
 } from "@/lib/analytics";
 import { Growth, Section, Toggle } from "@/components/ui-bits";
 
@@ -39,22 +39,24 @@ export function SalesPerformance({
   range: rangeProp,
   outlet = ALL_OUTLETS,
   onRangeChange,
+  custom,
 }: {
   range?: Range;
   outlet?: string;
   onRangeChange?: (r: Range) => void;
+  custom?: Custom;
 }) {
   const [local, setLocal] = useState<Range>("This Week");
   const range = rangeProp ?? local;
   const setRange = onRangeChange ?? setLocal;
 
-  const data = seriesFor(range, outlet);
-  const { sales, prevSales, growth } = kpisFor(range, outlet);
+  const data = seriesFor(range, outlet, custom);
+  const { sales, prevSales, growth } = kpisFor(range, outlet, custom);
 
   return (
     <Section
       title="Sales Performance"
-      subtitle={`${seriesLabel(range)} · ${outlet}`}
+      subtitle={`${seriesLabel(range, custom)} · ${outlet}`}
       action={<Toggle options={RANGES} value={range} onChange={setRange} />}
     >
       <div className="mb-5 flex flex-wrap items-end gap-6">
@@ -141,13 +143,15 @@ export function ProductSales({
   limit = 5,
   range = "This Month",
   outlet = ALL_OUTLETS,
+  custom,
 }: {
   limit?: number;
   range?: Range;
   outlet?: string;
+  custom?: Custom;
 }) {
   const [sort, setSort] = useState<Sort>("Most Sold");
-  const sorted = sortProducts(productsFor(range, outlet), sort).slice(0, limit);
+  const sorted = sortProducts(productsFor(range, outlet, custom), sort).slice(0, limit);
 
   return (
     <Section
@@ -223,11 +227,13 @@ export function ProductSales({
 export function ProductRevenueBars({
   range = "This Month",
   outlet = ALL_OUTLETS,
+  custom,
 }: {
   range?: Range;
   outlet?: string;
+  custom?: Custom;
 }) {
-  const data = productsFor(range, outlet)
+  const data = productsFor(range, outlet, custom)
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 6);
 
