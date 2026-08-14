@@ -66,6 +66,9 @@ export function tick() {
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
+  if (state.updatedAt === "--:--") {
+    state = { ...state, updatedAt: clock() };
+  }
   if (!timer) timer = setInterval(tick, 5000);
   return () => {
     listeners.delete(listener);
